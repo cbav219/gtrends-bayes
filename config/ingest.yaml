@@ -1,0 +1,30 @@
+# Ingestion-side knobs that aren't tied to a specific predictor / target.
+# Loaded by scripts/pull_trends_daily.py and threaded into backtest/walk_forward
+# as the publication-lag setting for daily-cadence runs.
+
+# How many business days back from `as_of` we discard before treating a Trends
+# observation as "available." Google revises the last ~48–72 hours of daily
+# data as it finalizes the sample; 3 BD gets past the revision window with
+# margin. The v2 weekly default (1 calendar week ≈ 5 BD) carries forward
+# unchanged for weekly-cadence runs.
+daily_lag_business_days: 3
+
+# Cadence-aware preprocessing defaults. The pipeline picks the row matching
+# its `cadence` argument; downstream features.library reads `periods_per_year`
+# from here.
+preprocessing:
+  weekly:
+    hp_lambda: 1600           # Ravn-Uhlig weekly
+    periods_per_year: 52
+    yoy_diff_lag: 52
+    structural_break_drops_per_year: 1   # ~1 obs each January
+  daily:
+    hp_lambda: 14400          # Ravn-Uhlig daily
+    periods_per_year: 252
+    yoy_diff_lag: 252
+    structural_break_drops_per_year: 22  # ~22 trading days each January
+
+# Daily-chunker geometry (informational — also passed via CLI flags).
+daily_chunker:
+  chunk_days: 80
+  overlap_days: 10

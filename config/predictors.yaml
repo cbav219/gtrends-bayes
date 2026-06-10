@@ -1,0 +1,84 @@
+# Trends predictor universe for HY + IG forecasting.
+# Source: IMPLEMENTATION_PLAN.md §3 Phase 4 / §4 (verbatim copy).
+# IMPORTANT: every topic `mid` MUST be validated via pytrends.suggestions(name)
+# before pulling — Google occasionally renumbers topics. The pull script logs a
+# warning and skips any predictor whose mid no longer maps to the named concept.
+
+geo: US
+
+# ---- Categories (harmonized, language-neutral) ----
+categories:
+  labor:
+    - {id: 60,   name: "Jobs"}
+    - {id: 958,  name: "Job Listings"}
+    - {id: 957,  name: "Recruitment & Staffing"}
+  credit_lending:
+    - {id: 904,  name: "Credit & Lending"}
+    - {id: 1242, name: "Auto Financing"}
+    - {id: 870,  name: "Home Financing"}
+    - {id: 902,  name: "Credit Cards"}
+  consumption:
+    - {id: 47,   name: "Autos & Vehicles"}
+    - {id: 71,   name: "Food & Drink"}
+    - {id: 67,   name: "Real Estate"}
+    - {id: 18,   name: "Apparel"}
+    - {id: 121,  name: "Hotels & Accommodations"}
+    - {id: 203,  name: "Travel"}
+  distress:
+    - {id: 784,  name: "Bankruptcy"}
+    - {id: 1163, name: "Foreclosure"}
+  industrial:
+    - {id: 46,   name: "Agriculture & Forestry"}
+    - {id: 1228, name: "Manufacturing"}
+    - {id: 1014, name: "Energy & Utilities"}
+  finance_meta:
+    - {id: 7,    name: "Finance"}
+    - {id: 38,   name: "Investing"}
+    - {id: 814,  name: "Insurance"}
+
+# ---- Topics (semantic — disambiguate intent across languages) ----
+# Mids re-resolved 2026-05-03 via scripts/rediscover_topic_mids.py + manual
+# audit. Four entries diverge from the auto-suggestion:
+#   - Federal Reserve  : kept (Central bank type) — auto-suggest gave USD currency
+#   - Bond (finance)   : renamed to "Government bond" (no clean mid for the
+#                        generic "Bond" concept — pytrends only returned books)
+#   - Volatility (finance): renamed to "VIX" — Index-typed mid for the actual VIX
+#   - Default (finance): DROPPED — no acceptable mid (only book/attorney matches)
+topics:
+  crisis:
+    - {mid: "/g/1211cg58", name: "Economic crisis"}
+    - {mid: "/m/06bmj",    name: "Recession"}
+    - {mid: "/m/02gyy_",   name: "Crisis"}
+    - {mid: "/m/088p1q",   name: "Financial crisis"}
+  rates_and_macro:
+    - {mid: "/m/012qn2",   name: "Interest"}
+    - {mid: "/m/02xmb",    name: "Federal Reserve"}
+    - {mid: "/m/09jx2",    name: "Inflation"}
+    - {mid: "/m/02nv3v",   name: "Yield curve"}
+  credit_specific:
+    - {mid: "/m/0273t5w",  name: "Mortgage"}
+    - {mid: "/m/02crs_",   name: "Student loan"}
+    - {mid: "/m/0n85x",    name: "Government bond"}
+    - {mid: "/m/0d6t2",    name: "Junk bond"}
+    - {mid: "/m/04qv5v",   name: "Corporate bond"}
+    - {mid: "/m/04g7bp",   name: "Credit rating"}
+  labor_topics:
+    - {mid: "/m/07s_c",    name: "Unemployment"}
+    - {mid: "/m/0218w7",   name: "Unemployment benefits"}
+    - {mid: "/m/02jnsq",   name: "Layoff"}
+  investment:
+    - {mid: "/m/0g_fl",    name: "Investment"}
+    - {mid: "/m/0drqp",    name: "Stock market"}
+    - {mid: "/m/09fld6",   name: "VIX"}
+
+# ---- Sampling discipline (OECD Annex A) ----
+sampling:
+  n_samples: 6
+  sleep_seconds: 60
+  drop_high_variance: true
+  var_threshold: 25
+
+# ---- Time window for the predictor pull ----
+window:
+  start: "2008-01-01"
+  end: "2026-04-30"

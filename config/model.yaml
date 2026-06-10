@@ -1,0 +1,55 @@
+bsts:
+  state_spec:
+    local_linear_trend: true
+    seasonal:
+      enabled: true
+      n_seasons: 52
+  prior:
+    expected_model_size: 5
+    expected_model_size_per_target:
+      HY: 12
+      IG: 8
+      # v5.1 OAS-direct sub-models (156-week history). Smaller expected
+      # size keeps the spike-and-slab tight on the small-N regime;
+      # paired with the --train-window 52 CLI override in the v5.1 refit.
+      HY_OAS: 8
+      IG_OAS: 8
+  mcmc:
+    niter: 3000
+    burn_frac: 0.1
+    seed: 42
+  inference:
+    forecast_draws: 1000
+    forecast_horizon: 1
+baselines:
+  ar_p:
+    p: 4
+  ar_1:
+    # v3 Phase D.3: AR(1) variant for parity with random-walk intuition and as
+    # the StackedResidualModel's optional shorter-memory backbone. Compared to
+    # ar_p (=AR(4)) by Brier score on validation fold; per-target winner is
+    # locked under stacked_residual.ar_p_per_target below.
+    p: 1
+  ar_vix:
+    p: 4
+    include_vix_log_diff: true
+
+stacked_residual:
+  # v3 Phase D.3 — per-target AR-backbone choice for StackedResidualModel.
+  # Provisional defaults; bake-off lands in scripts/horizon_sweep_v3.py and
+  # locks the winner here.
+  ar_p_per_target:
+    HY_OAS: 4
+    IG_OAS: 4
+    HY: 4
+    IG: 4
+backtest:
+  train_window: 260
+  step: 1
+  horizon: 1
+  refit_every: 13
+  publication_lag: 1
+  coverage_levels:
+  - 0.5
+  - 0.8
+  - 0.95
