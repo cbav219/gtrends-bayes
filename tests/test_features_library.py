@@ -23,6 +23,15 @@ from gtrends_bayes.features.library import (
 
 CONFIG_DIR = Path(__file__).resolve().parents[1] / "config"
 
+# The target/control loaders read cached parquets from data/raw/targets/. That data
+# is proprietary and not shipped (see data/README.md), so these tests skip when the
+# cache is absent (e.g. in CI) — mirroring the importorskip("rpy2") gate the R tests use.
+TARGETS_DIR = CONFIG_DIR.parent / "data" / "raw" / "targets"
+requires_target_cache = pytest.mark.skipif(
+    not TARGETS_DIR.exists() or not any(TARGETS_DIR.glob("*.parquet")),
+    reason="cached target parquets (data/raw/targets/) not present — data not shipped",
+)
+
 
 # ---- apply_transform --------------------------------------------------------
 
@@ -76,6 +85,7 @@ def targets_cfg():
     return TargetsConfig.from_yaml(CONFIG_DIR / "targets.yaml")
 
 
+@requires_target_cache
 def test_load_target_HY_returns_series(targets_cfg):
     s = load_target("HY", targets_cfg)
     assert isinstance(s, pd.Series)
@@ -89,6 +99,7 @@ def test_load_target_unknown_raises(targets_cfg):
         load_target("XYZ", targets_cfg)
 
 
+@requires_target_cache
 def test_load_market_controls_loads_and_transforms(targets_cfg):
     controls = load_market_controls(targets_cfg)
     assert set(controls) == {"vix", "ust10y", "ust2y10y_slope"}
@@ -100,6 +111,7 @@ def test_load_market_controls_loads_and_transforms(targets_cfg):
     assert np.isfinite(controls["ust2y10y_slope"].iloc[0])
 
 
+@requires_target_cache
 def test_load_market_controls_derived_slope_matches_manual_calc(targets_cfg):
     """Slope = DGS10 − DGS2 should match a manual computation."""
     controls = load_market_controls(targets_cfg)

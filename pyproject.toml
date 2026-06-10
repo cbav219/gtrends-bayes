@@ -42,7 +42,7 @@ dev = [
     "pytest-cov>=5.0",
     "hypothesis>=6.108",
     "black>=24.4",
-    "ruff>=0.5",
+    "ruff==0.15.16",  # pinned so a future ruff release can't redden CI
     "jupyter>=1.0",
     "ipykernel>=6.29",
     "matplotlib>=3.9",
