@@ -81,7 +81,7 @@ class WalkForward:
         if horizons is not None and horizon is not None:
             raise ValueError("pass either horizon (legacy) or horizons (new), not both")
         if horizons is not None:
-            resolved = list(int(h) for h in horizons)
+            resolved = [int(h) for h in horizons]
         elif horizon is not None:
             resolved = [int(horizon)]
         else:
@@ -249,7 +249,7 @@ class WalkForward:
                     "y_pred_mean": float(paths_at_h.mean()),
                     "refit": int(do_refit),
                 }
-                for q, col in zip(wanted_quantiles, q_cols):
+                for q, col in zip(wanted_quantiles, q_cols, strict=False):
                     row[col] = float(np.quantile(paths_at_h, q))
                 rows.append((X.index[target_idx], h, row))
 

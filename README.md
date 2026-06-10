@@ -2,8 +2,8 @@
 
 **Bayesian Structural Time Series forecasting of High-Yield (HY) and Investment-Grade (IG) corporate-bond spreads using Google Trends predictors.**
 
+[![CI](https://github.com/cbav219/gtrends-bayes/actions/workflows/ci.yml/badge.svg)](https://github.com/cbav219/gtrends-bayes/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)
-![Tests](https://img.shields.io/badge/tests-251%20passing-brightgreen.svg)
 ![Model](https://img.shields.io/badge/model-BSTS%20%C3%97%20Google%20Trends-8A2BE2.svg)
 ![License](https://img.shields.io/badge/license-Proprietary-red.svg)
 
@@ -84,8 +84,11 @@ tests/                Test suite (251 tests)
 
 ## Requirements
 
-- **Python ≥ 3.11**
-- **R** with the `bsts`, `Boom`, and `BoomSpikeSlab` packages (for model fitting)
+- **Python ≥ 3.11** — the inference layer, preprocessing/backtest pipeline, and test
+  suite need only this (`make install`).
+- **R** + `rpy2` — only for *fitting* the BSTS model. R packages `bsts`, `Boom`,
+  `BoomSpikeSlab`; install rpy2 via the optional extra: `pip install -e ".[r]"`
+  (or `make r-deps`, which does both).
 - A free **FRED API key** — https://fred.stlouisfed.org/docs/api/api_key.html
 
 > **Note on data & model artifacts.** The datasets and frozen `.pkl` models this

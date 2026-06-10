@@ -11,7 +11,6 @@ from __future__ import annotations
 
 from typing import Literal
 
-import numpy as np
 import pandas as pd
 
 from gtrends_bayes.logging import get_logger
@@ -61,7 +60,7 @@ def yoy_log_diff(
     # Build a weighted prior-year reference for every column.
     ref = sum(
         w * df.shift(periods_per_year - off)
-        for off, w in zip(_NEIGHBOR_OFFSETS, _NEIGHBOR_WEIGHTS)
+        for off, w in zip(_NEIGHBOR_OFFSETS, _NEIGHBOR_WEIGHTS, strict=False)
     )
     return df - ref
 

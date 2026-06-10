@@ -52,7 +52,7 @@ class StackedResidualModel:
 
     # ---- core ---------------------------------------------------------------
 
-    def fit(self, y: pd.Series, X: pd.DataFrame) -> "StackedResidualModel":
+    def fit(self, y: pd.Series, X: pd.DataFrame) -> StackedResidualModel:
         from gtrends_bayes.models.baseline import AR_p
         from gtrends_bayes.models.bsts import BSTS
 

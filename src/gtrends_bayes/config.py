@@ -56,7 +56,7 @@ class PredictorsConfig(BaseModel):
     window: WindowConfig
 
     @classmethod
-    def from_yaml(cls, path: str | Path) -> "PredictorsConfig":
+    def from_yaml(cls, path: str | Path) -> PredictorsConfig:
         raw = yaml.safe_load(Path(path).read_text())
         flat: list[PredictorEntry] = []
         for group, entries in (raw.get("categories") or {}).items():
@@ -111,7 +111,7 @@ class TargetsConfig(BaseModel):
     window: WindowConfig
 
     @classmethod
-    def from_yaml(cls, path: str | Path) -> "TargetsConfig":
+    def from_yaml(cls, path: str | Path) -> TargetsConfig:
         raw = yaml.safe_load(Path(path).read_text())
         return cls(**raw)
 
@@ -169,7 +169,7 @@ class IngestConfig(BaseModel):
     daily_chunker: dict = Field(default_factory=dict)
 
     @classmethod
-    def from_yaml(cls, path: str | Path) -> "IngestConfig":
+    def from_yaml(cls, path: str | Path) -> IngestConfig:
         raw = yaml.safe_load(Path(path).read_text())
         return cls(**raw)
 
@@ -180,7 +180,7 @@ class ModelConfig(BaseModel):
     backtest: BacktestConfig = Field(default_factory=BacktestConfig)
 
     @classmethod
-    def from_yaml(cls, path: str | Path) -> "ModelConfig":
+    def from_yaml(cls, path: str | Path) -> ModelConfig:
         raw = yaml.safe_load(Path(path).read_text())
         return cls(**raw)
 

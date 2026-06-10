@@ -12,7 +12,6 @@ from __future__ import annotations
 import ast
 import operator
 import re
-from collections.abc import Sequence
 from pathlib import Path
 from typing import Literal
 
@@ -279,6 +278,6 @@ def add_market_controls(
     """
     if not controls:
         return X.copy(), []
-    aligned = pd.DataFrame({name: s for name, s in controls.items()}).reindex(X.index)
+    aligned = pd.DataFrame(dict(controls)).reindex(X.index)
     augmented = pd.concat([X, aligned], axis=1)
     return augmented, list(controls.keys())

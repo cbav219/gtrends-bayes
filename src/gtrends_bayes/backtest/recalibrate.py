@@ -73,10 +73,7 @@ def learn_conformal_multiplier(
     y = y_actual.loc[common].astype(float)
     lo = q_low.loc[common].astype(float)
     hi = q_high.loc[common].astype(float)
-    if median is None:
-        med = (lo + hi) / 2.0
-    else:
-        med = median.loc[common].astype(float)
+    med = (lo + hi) / 2.0 if median is None else median.loc[common].astype(float)
 
     # Per-observation "scale" needed for that point to be inside the band:
     #   α_i = max((med_i - y_i) / (med_i - lo_i),  (y_i - med_i) / (hi_i - med_i), 0)

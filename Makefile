@@ -6,8 +6,8 @@ ACTIVATE = . $(VENV)/bin/activate
 
 help:
 	@echo "Targets:"
-	@echo "  install       Create venv (.venv) and install package + dev deps"
-	@echo "  r-deps        Install required R packages (bsts, Boom, BoomSpikeSlab)"
+	@echo "  install       Create venv (.venv) and install package + dev deps (no R)"
+	@echo "  r-deps        Install rpy2 + required R packages (bsts, Boom, BoomSpikeSlab)"
 	@echo "  pull-trends   Pull configured Trends predictors into data/raw/"
 	@echo "  preprocess    Run preprocessing pipeline -> data/processed/features.parquet"
 	@echo "  fit           Fit BSTS for both targets (HY, IG)"
@@ -23,6 +23,7 @@ install:
 	$(ACTIVATE) && pip install --upgrade pip && pip install -e ".[dev]"
 
 r-deps:
+	$(ACTIVATE) && pip install -e ".[r]"
 	Rscript -e 'pkgs <- c("bsts","Boom","BoomSpikeSlab"); to_install <- pkgs[!pkgs %in% rownames(installed.packages())]; if (length(to_install)) install.packages(to_install, repos="https://cloud.r-project.org")'
 
 pull-trends:

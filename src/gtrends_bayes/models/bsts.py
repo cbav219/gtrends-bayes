@@ -18,6 +18,7 @@ R subprocess per target, so the global-R limitation is harmless.
 
 from __future__ import annotations
 
+import contextlib
 import uuid
 from pathlib import Path
 from typing import Any
@@ -90,10 +91,7 @@ def _r_listvector_to_dict(lv) -> dict:
     it's a method. Fall back to the AttrPair API as a last resort.
     """
     names_attr = getattr(lv, "names", None)
-    if callable(names_attr):
-        names_obj = names_attr()
-    else:
-        names_obj = names_attr
+    names_obj = names_attr() if callable(names_attr) else names_attr
     if names_obj is None or names_obj is _RO.NULL:
         # Try the attribute-pair fallback (pure-Python rpy2 path).
         try:
@@ -158,7 +156,7 @@ class BSTS:
 
     # ---- core API -----------------------------------------------------------
 
-    def fit(self, y: pd.Series, X: pd.DataFrame | None = None) -> "BSTS":
+    def fit(self, y: pd.Series, X: pd.DataFrame | None = None) -> BSTS:
         """Push ``y``, ``X`` to R, call ``fit_bsts``, store posterior summaries."""
         _init_r()
         if not isinstance(y, pd.Series):
@@ -364,10 +362,8 @@ class BSTS:
     def __del__(self) -> None:
         # Best-effort cleanup of the R-side model object on garbage collection.
         if self._fitted and _R_INITIALIZED and _RO is not None:
-            try:
+            with contextlib.suppress(Exception):
                 _RO.r["delete_bsts"](self._model_id)
-            except Exception:  # noqa: BLE001
-                pass
 
     def _require_fit(self) -> None:
         if not self._fitted:

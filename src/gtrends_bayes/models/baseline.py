@@ -33,7 +33,7 @@ class NaiveRW:
         self._last_value: float | None = None
         self._sigma: float | None = None
 
-    def fit(self, y: pd.Series, X: pd.DataFrame | None = None) -> "NaiveRW":  # noqa: ARG002
+    def fit(self, y: pd.Series, X: pd.DataFrame | None = None) -> NaiveRW:  # noqa: ARG002
         if not isinstance(y, pd.Series):
             raise TypeError(f"y must be pandas.Series, got {type(y).__name__}")
         diffs = y.diff().dropna()
@@ -72,7 +72,7 @@ class AR_p:
         self._y_history: pd.Series | None = None
         self._sigma: float | None = None
 
-    def fit(self, y: pd.Series, X: pd.DataFrame | None = None) -> "AR_p":  # noqa: ARG002
+    def fit(self, y: pd.Series, X: pd.DataFrame | None = None) -> AR_p:  # noqa: ARG002
         if not isinstance(y, pd.Series):
             raise TypeError(f"y must be pandas.Series, got {type(y).__name__}")
         model = AutoReg(y.values.astype(float), lags=self.p, old_names=False)
@@ -119,7 +119,7 @@ class AR_VIX:
         self._exog_history: pd.DataFrame | None = None
         self._sigma: float | None = None
 
-    def fit(self, y: pd.Series, X: pd.DataFrame) -> "AR_VIX":
+    def fit(self, y: pd.Series, X: pd.DataFrame) -> AR_VIX:
         if X is None or X.shape[1] == 0:
             raise ValueError("AR_VIX requires a non-empty X (exogenous regressors)")
         if len(X) != len(y):

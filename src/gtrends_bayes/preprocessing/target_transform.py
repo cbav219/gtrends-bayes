@@ -43,7 +43,7 @@ class TargetTransform:
         self.last_level_: float | None = None
         self.last_index_: pd.Timestamp | None = None
 
-    def fit(self, level_series: pd.Series) -> "TargetTransform":
+    def fit(self, level_series: pd.Series) -> TargetTransform:
         """Remember the final level + its timestamp so we can invert later."""
         if level_series.empty:
             raise ValueError("TargetTransform.fit got an empty series")

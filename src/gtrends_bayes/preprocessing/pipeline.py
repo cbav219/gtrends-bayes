@@ -105,7 +105,7 @@ class Pipeline:
 
     # ---- Stateful API -------------------------------------------------------
 
-    def fit(self, df: pd.DataFrame) -> "Pipeline":
+    def fit(self, df: pd.DataFrame) -> Pipeline:
         """Run the pipeline on ``df`` to populate ``train_eligible_``.
 
         Currently equivalent to ``fit_transform`` but discards the returned
